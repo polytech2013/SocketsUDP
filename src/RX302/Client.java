@@ -7,6 +7,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,6 +16,8 @@ import java.util.logging.Logger;
  * @author Mario
  */
 public class Client extends Node {
+    
+    static String SERVER = null;
     
     public Client() {
         init();
@@ -32,10 +35,21 @@ public class Client extends Node {
     @Override
     public void run() {     
         try {
+            // Prepare scanner
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Enter your message:");
+            // Get message
+            String message = scanner.nextLine();
             // Set message to send
-            buffer = this.encodeString("hello server rx302");
+            buffer = this.encodeString(message);
             // Get server address
-            InetAddress address = InetAddress.getLocalHost();
+            InetAddress address;
+            if (SERVER != null) {
+                address = InetAddress.getByName(SERVER);
+            }
+            else {
+                address = InetAddress.getLocalHost();
+            }            
             // Create datagram packet to send
             packet = new DatagramPacket(buffer, buffer.length, address, Server.PORT);
             // Send packet
@@ -68,7 +82,7 @@ public class Client extends Node {
     
     public static void main(String[] args) {
         Client client = new Client();
-        
+        // Run client
         client.run();
     }
     

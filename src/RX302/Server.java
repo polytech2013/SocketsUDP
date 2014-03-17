@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class Server extends Node {
     
-    static final int PORT = 1025;
+    static final int PORT = 1028;
     
     public Server() {
         init();
@@ -68,7 +68,7 @@ public class Server extends Node {
     
     public static void main(String[] args) {
         Server server = new Server();
-        
+        // Run server
         server.run();
     }
     
