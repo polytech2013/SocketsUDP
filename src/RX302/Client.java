@@ -23,8 +23,7 @@ public class Client extends Node {
         init();
     }
     
-    @Override
-    public void init() {
+    private void init() {
         try {
             socket = new DatagramSocket();
         } catch (SocketException ex) {
@@ -33,15 +32,9 @@ public class Client extends Node {
     }
     
     @Override
-    public void run() {     
+    public void run() {  
+        String message = "";
         try {
-            // Prepare scanner
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter your message:");
-            // Get message
-            String message = scanner.nextLine();
-            // Set message to send
-            buffer = this.encodeString(message);
             // Get server address
             InetAddress address;
             if (SERVER != null) {
@@ -49,11 +42,14 @@ public class Client extends Node {
             }
             else {
                 address = InetAddress.getLocalHost();
-            }            
+            }
+            // Set connection message to send
+            buffer = this.encodeString("Hello server rx302");                            
             // Create datagram packet to send
             packet = new DatagramPacket(buffer, buffer.length, address, Server.PORT);
             // Send packet
-            socket.send(packet);
+            socket.send(packet);            
+            
             // Prepare buffer for receiving
             buffer = new byte[LENGTH];
             // Prepare datagram packet for response
@@ -62,6 +58,23 @@ public class Client extends Node {
             socket.receive(packet);
             // Display server response
             display(packet);
+            
+            // Save received port
+            int workerPort = packet.getPort();
+            // Ready for communication
+            while (!message.contains("stop")) {
+                // Prepare scanner
+                Scanner scanner = new Scanner(System.in);
+                System.out.println("Enter your message:");
+                // Get message
+                message = scanner.nextLine();
+                // Set message to send
+                buffer = this.encodeString(message);                            
+                // Create datagram packet to send
+                packet = new DatagramPacket(buffer, buffer.length, address, workerPort);
+                // Send packet
+                socket.send(packet);
+            }
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }

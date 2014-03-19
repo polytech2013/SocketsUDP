@@ -4,8 +4,6 @@ package RX302;
 import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -20,7 +18,6 @@ public abstract class Node {
     protected byte[] buffer;
     
     abstract void run();
-    abstract void init();
     
     protected void close() {
         socket.close();
