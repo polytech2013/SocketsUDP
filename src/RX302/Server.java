@@ -16,28 +16,28 @@ import java.util.logging.Logger;
 public class Server extends Node {
     
     static final int PORT = 1025;
-    static final int LIMIT = 3;
+    static final int LIMIT = 2;
     
-    private ArrayList<Integer> ports;
+    private PortUtility portUtility;
     
     public Server() {
         init();
-        //initPort();
     }
     
     private void init() {
+        // Initialise socket
         try {
             socket = new DatagramSocket(PORT);
         } catch (SocketException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
+        // Initialise available ports
+        portUtility = PortUtility.getInstance();
     }
     
     @Override
     public void run() {
         try {
-            // Create client worker counter
-            int id = 1;
             System.out.println("-- Ready to receive --");
             while (true) {
                 // Prepare buffer for receiving
@@ -46,10 +46,18 @@ public class Server extends Node {
                 packet = new DatagramPacket(buffer, buffer.length);
                 // Wait for client message
                 socket.receive(packet);
-                // Create client worker
-                DatagramSocket workerSocket = new DatagramSocket(PORT + id);
-                ClientWorker cw = new ClientWorker(id, workerSocket, packet);
-                id++;
+                
+                // Try to find a new port for the client worker
+                ClientWorker cw;
+                int newPort = portUtility.findAvailable();                
+                if (newPort == 0) {
+                    // No ports available, use same socket
+                    cw = new ClientWorker(socket, packet);
+                }
+                else {
+                    // Create client worker with new port
+                    cw = new ClientWorker(newPort, packet);
+                }
                 // Start client worker
                 new Thread(cw).start();
             }

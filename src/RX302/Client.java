@@ -58,23 +58,25 @@ public class Client extends Node {
             socket.receive(packet);
             // Display server response
             display(packet);
-            
-            // Save received port
-            int workerPort = packet.getPort();
-            // Ready for communication
-            while (!message.contains("stop")) {
-                // Prepare scanner
-                Scanner scanner = new Scanner(System.in);
-                System.out.println("Enter your message:");
-                // Get message
-                message = scanner.nextLine();
-                // Set message to send
-                buffer = this.encodeString(message);                            
-                // Create datagram packet to send
-                packet = new DatagramPacket(buffer, buffer.length, address, workerPort);
-                // Send packet
-                socket.send(packet);
-            }
+
+            if (!decodeString(packet.getData()).contains("No ports available")) {
+                // Save received port
+                int workerPort = packet.getPort();
+                // Ready for communication
+                while (!message.contains("stop")) {
+                    // Prepare scanner
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.println("Enter your message:");
+                    // Get message
+                    message = scanner.nextLine();
+                    // Set message to send
+                    buffer = this.encodeString(message);                            
+                    // Create datagram packet to send
+                    packet = new DatagramPacket(buffer, buffer.length, address, workerPort);
+                    // Send packet
+                    socket.send(packet);
+                }
+            }            
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
