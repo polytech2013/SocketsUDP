@@ -2,10 +2,10 @@
 package RX302;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,9 +16,13 @@ import java.util.logging.Logger;
 public class Server extends Node {
     
     static final int PORT = 1025;
+    static final int LIMIT = 3;
+    
+    private ArrayList<Integer> ports;
     
     public Server() {
         init();
+        //initPort();
     }
     
     private void init() {
