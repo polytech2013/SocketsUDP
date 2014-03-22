@@ -28,7 +28,7 @@ public abstract class Node {
     }
     
     protected String decodeString(byte[] buffer) throws UnsupportedEncodingException {
-        return new String(buffer, "ascii");
+        return new String(buffer, "ascii").trim();
     }
     
 }
