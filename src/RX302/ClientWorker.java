@@ -73,7 +73,6 @@ public class ClientWorker extends Node implements Runnable {
                         this.close();
                         // Close thread
                         listening = false;                        
-                        
                     }
                 }
             }
